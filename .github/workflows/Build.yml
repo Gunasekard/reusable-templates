@@ -6,7 +6,7 @@ on :
      
 jobs:
   build:
-    runs-on: [self-hosted, linux, X64, research]
+    runs-on: Ubuntu-latest
     steps:
       - name: Step 1 - Checkout Repository from GitHub      
         uses: actions/checkout@v2
