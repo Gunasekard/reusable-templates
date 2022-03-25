@@ -43,3 +43,9 @@ jobs:
         id: name_version
         run: |
           echo "::set-output name=APP_NAME_VERSION::${{ steps.version.outputs.APP_NAME }}-${{ steps.version.outputs.TAG_NAME }}"
+          
+      - name: step 9 - upload to jfrog
+        run: |
+          curl -H -X PUT "https://gunasekard.jfrog.io/artifactory/sample_artifact-gradle-dev/${{ steps.name_version.outputs.APP_NAME_VERSION }}.jar" -T '${{ github.workspace }}'/build/libs/${{ steps.name_version.outputs.APP_NAME_VERSION }}.jar
+          
+
