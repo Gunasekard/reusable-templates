@@ -1,0 +1,41 @@
+on :
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        required: true
+        type: string
+        
+    secrets:
+      org:
+        required: true
+      space:
+        required: true
+      username:
+        required: true
+      password:
+        required: true
+      manifest:
+        required: false
+      JF_API:
+        required: true
+ 
+jobs:
+   
+  Deploy_To_Develop:
+     runs-on: [self-hosted, linux, X64, research]
+     environment: ${{ inputs.ENVIRONMENT }}
+     
+     steps:
+     - name: Step 1 - Checkout branch from GitHub
+       uses: actions/checkout@v2
+          
+     - name:  Retrieve version and name
+       id: version         
+       run: |
+          echo "::set-output name=TAG_NAME::$(cat ${{ github.workspace }}/build.gradle |grep "version =" | grep -Eo '[0-9]\.[0-9]\.[0-9]')"
+          echo "::set-output name=APP_NAME::$(cat ${{ github.workspace }}/settings.gradle |grep -oP "rootProject.name = '\K[^']+")"
+        
+     - name: Application name with version
+       id: name_version
+       run: |
+          echo "::set-output name=APP_NAME_VERSION::${{ steps.version.outputs.APP_NAME }}-${{ steps.version.outputs.TAG_NAME }}"
